@@ -4,6 +4,7 @@
 # Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
 from heapq import heappop, heappush, heapify
 from enum import Enum
+import numpy as np
 
 
 def day_one():
@@ -13,7 +14,7 @@ def day_one():
     current_calorie = 0
 
     # read into heap
-    inp = open("dayOneInput.txt", "r")
+    inp = open("inputs/dayOneInput.txt", "r")
     for line in inp:
         if line.strip():
             current_calorie += int(line)
@@ -101,7 +102,7 @@ def day_two():
     print("Welcome to day 2")
     score = 0
     # read it in
-    inp = open("dayTwoInput.txt", "r")
+    inp = open("inputs/dayTwoInput.txt", "r")
     for line in inp:
         if line.strip():
             tmp = PaperRockScissors(line[0], line[len(line) - 2])
@@ -110,9 +111,37 @@ def day_two():
     print(score)
 
 
+def find_repeated_character(line):
+    split_arr = np.array_split(line, 2)
+    return np.intersect1d(split_arr[0], split_arr[1])[0]
+
+
+def find_character_score(repeated_char):
+    if np.char.islower(repeated_char):
+        # print(repeated_char, ord(repeated_char) - 96)
+        return ord(repeated_char) - 96
+    else:
+        # print(repeated_char, ord(repeated_char), ord(repeated_char) - 38)
+        return ord(repeated_char) - 38
+
+def day_three():
+    print("Hello from day 3")
+    inp = open("inputs/dayThreeInput.txt", "r")
+    score = 0
+    for line in inp:
+        if line.strip():
+            # I am ashamed of this nest
+            tmp = []
+            for ch in line:
+                if ch != '\n':
+                    tmp.append(ch)
+            repeated_char = find_repeated_character(tmp)
+            score += find_character_score(repeated_char)
+    inp.close()
+    print(score)
+
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     # day_one()
-    day_two()
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    # day_two()
+    day_three()
