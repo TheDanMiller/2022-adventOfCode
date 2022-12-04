@@ -140,7 +140,30 @@ def day_three():
 
 
 # Press the green button in the gutter to run the script.
+def convert_to_array(param):
+    lower = int(param.split("-")[0])
+    upper = int(param.split("-")[1])
+    range_of_values = []
+    for i in range(lower, upper + 1):
+        range_of_values.append(i)
+    return range_of_values
+
+
+def day_four():
+    l = open("inputs/dayFourInput.txt", "r")
+    full_overlap = 0
+    for f in l:
+        f = f.strip().split(",")
+        range_one = convert_to_array(f[0])
+        range_two = convert_to_array(f[1])
+        union_length = len(np.union1d(range_two, range_one))
+        if len(range_two) == union_length or len(range_one) == union_length:
+            full_overlap += 1
+    print(full_overlap)
+
+
 if __name__ == '__main__':
     # day_one()
     # day_two()
-    day_three()
+    # day_three()
+    day_four()
