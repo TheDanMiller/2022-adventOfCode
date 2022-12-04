@@ -154,12 +154,12 @@ def day_four():
     full_overlap = 0
     for f in l:
         f = f.strip().split(",")
-        range_one = convert_to_array(f[0])
-        range_two = convert_to_array(f[1])
-        union_length = len(np.union1d(range_two, range_one))
-        if len(range_two) == union_length or len(range_one) == union_length:
+        # range_one = convert_to_array(f[0])
+        # range_two = convert_to_array(f[1])
+        if len(np.intersect1d(convert_to_array(f[0]), convert_to_array(f[1]))) >= 1:
             full_overlap += 1
     print(full_overlap)
+
 
 
 if __name__ == '__main__':
