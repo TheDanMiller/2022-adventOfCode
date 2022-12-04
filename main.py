@@ -112,8 +112,7 @@ def day_two():
 
 
 def find_repeated_character(line):
-    split_arr = np.array_split(line, 2)
-    return np.intersect1d(split_arr[0], split_arr[1])[0]
+    return np.intersect1d(np.intersect1d(line[0], line[1]), line[2])[0]
 
 
 def find_character_score(repeated_char):
@@ -124,21 +123,21 @@ def find_character_score(repeated_char):
         # print(repeated_char, ord(repeated_char), ord(repeated_char) - 38)
         return ord(repeated_char) - 38
 
+
 def day_three():
-    print("Hello from day 3")
     inp = open("inputs/dayThreeInput.txt", "r")
     score = 0
+    array_of_lines = []
     for line in inp:
         if line.strip():
-            # I am ashamed of this nest
-            tmp = []
-            for ch in line:
-                if ch != '\n':
-                    tmp.append(ch)
-            repeated_char = find_repeated_character(tmp)
+            array_of_lines.append(line.strip())
+        if len(array_of_lines) == 3:
+            repeated_char = find_repeated_character([list(sub) for sub in array_of_lines])
             score += find_character_score(repeated_char)
+            array_of_lines.clear()
     inp.close()
     print(score)
+
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
