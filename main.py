@@ -154,16 +154,54 @@ def day_four():
     full_overlap = 0
     for f in l:
         f = f.strip().split(",")
-        # range_one = convert_to_array(f[0])
-        # range_two = convert_to_array(f[1])
         if len(np.intersect1d(convert_to_array(f[0]), convert_to_array(f[1]))) >= 1:
             full_overlap += 1
     print(full_overlap)
 
+
+def read_matrix():
+    matrix = []
+    for line in open("inputs/dayFiveMatrix.txt"):
+        matrix.append([line[i:i+4] for i in range(0, len(line), 4)])
+    matrix_length = len(matrix)
+    f = [[] for _ in range(matrix_length)]
+    index = matrix_length
+    while index > 0:
+        tmp_index = 0
+        for item in matrix[index - 1]:
+            if item.strip():
+                f[tmp_index].append(item.strip())
+            tmp_index += 1
+        index -= 1
+    return f
+
+
+def read_instructions():
+    ins = []
+    for line in open("inputs/dayFiveInstructions.txt"):
+        tmp = line.split()
+        ins.append((int(tmp[1]), int(tmp[3]) - 1, int(tmp[5]) -1))
+    return ins
+
+
+def day_five():
+    instructions = read_instructions()
+    matrix = read_matrix()
+
+    # to move, from where, to where
+    for instruction in instructions:
+        count = instruction[0]
+        pop_list = instruction[1]
+        recieve_list = instruction[2]
+        for i in range(count):
+            matrix[recieve_list].append(matrix[pop_list].pop())
+    for index in range(len(matrix)):
+        print(matrix[index].pop())
 
 
 if __name__ == '__main__':
     # day_one()
     # day_two()
     # day_three()
-    day_four()
+    # day_four()
+    day_five()
