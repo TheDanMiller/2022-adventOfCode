@@ -193,8 +193,10 @@ def day_five():
         count = instruction[0]
         pop_list = instruction[1]
         recieve_list = instruction[2]
+        tmp = matrix[pop_list][-1*count:]
         for i in range(count):
-            matrix[recieve_list].append(matrix[pop_list].pop())
+            matrix[pop_list].pop()
+            matrix[recieve_list].append(tmp.pop(0))
     for index in range(len(matrix)):
         print(matrix[index].pop())
 
