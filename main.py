@@ -201,8 +201,8 @@ def day_five():
         print(matrix[index].pop())
 
 
-def is_signal(param):
-    if len(param) != 14:
+def is_signal(param, length):
+    if len(param) != length:
         return False
     if len(param) == len(set(param)):
         return True
@@ -210,10 +210,11 @@ def is_signal(param):
 
 
 def day_six():
+    CONST_LENGTH = 14
     for line in open("inputs/daySixInput.txt"):
         for i in range(len(line)):
-            if is_signal(line.strip()[i:i+14]):
-                print(i + 14)
+            if is_signal(line.strip()[i:i+CONST_LENGTH], CONST_LENGTH):
+                print(i + CONST_LENGTH)
                 break
 
 
