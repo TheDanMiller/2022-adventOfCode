@@ -201,9 +201,26 @@ def day_five():
         print(matrix[index].pop())
 
 
+def is_signal(param):
+    if len(param) != 14:
+        return False
+    if len(param) == len(set(param)):
+        return True
+    return False
+
+
+def day_six():
+    for line in open("inputs/daySixInput.txt"):
+        for i in range(len(line)):
+            if is_signal(line.strip()[i:i+14]):
+                print(i + 14)
+                break
+
+
 if __name__ == '__main__':
     # day_one()
     # day_two()
     # day_three()
     # day_four()
-    day_five()
+    # day_five()
+    day_six()
