@@ -218,10 +218,142 @@ def day_six():
                 break
 
 
+def day_seven():
+    flattened_file_structure = []
+    for line in open("inputs/daySevenInput.txt"):
+        print(line)
+
+
+def calc_outside_trees(forest):
+    return 2 * len(forest[0]) + 2 * (len(forest) - 2)
+
+
+def is_tree_visible(forest, row, column):
+    tree_height = forest[row][column]
+    visible_from_left = True
+    visible_from_right = True
+    visible_from_top = True
+    visible_from_bottom = True
+
+    # visible from left
+    for tree in range(0, column):
+        if forest[row][tree] >= tree_height:
+            visible_from_left = False
+            break
+
+    # visible from right
+    for tree in range(column + 1, len(forest[row])):
+        if forest[row][tree] >= tree_height:
+            visible_from_right = False
+            break
+
+    # visible_from_top
+    for tree in range(0, row):
+        if forest[tree][column] >= tree_height:
+            visible_from_top = False
+            break
+
+    # visible_from_bottom
+    for tree in range(row + 1, len(forest)):
+        if forest[tree][column] >= tree_height:
+            visible_from_bottom = False
+            break
+
+    return visible_from_left or visible_from_top or visible_from_right or visible_from_bottom
+
+
+def calc_inside_trees(forest):
+    inside_trees_visible = 0
+    for i in range(1, len(forest) - 1):
+        for j in range(1, len(forest[i]) - 1):
+            if is_tree_visible(forest, i, j):
+                inside_trees_visible += 1
+    return inside_trees_visible
+
+
+def calculate_left_view(forest, row, column):
+    tree_height = forest[row][column]
+    score = 0
+    if column - 1 == 0:
+        return 1
+    for tree in range(column -1, -1, -1):
+        score += 1
+        if forest[row][tree] >= tree_height:
+            break
+
+    return score
+
+
+def calculate_right_view(forest, row, column):
+    tree_height = forest[row][column]
+    score = 0
+    if column + 2 == len(forest[row]):
+        return 1
+    for tree in range(column + 1, len(forest[row])):
+        score += 1
+        if forest[row][tree] >= tree_height:
+            break
+    return score
+
+
+def calculate_bottom_view(forest, row, column):
+    tree_height = forest[row][column]
+    score = 0
+    if row + 2 == len(forest):
+        return 1
+    for tree in range(row + 1, len(forest)):
+        score += 1
+        if forest[tree][column] >= tree_height:
+            break
+    return score
+
+
+def calculate_top_view(forest, row, column):
+    tree_height = forest[row][column]
+    score = 0
+    if row - 1 == 0:
+        return 1
+    for tree in range(row - 1, -1, -1):
+        score += 1
+        if forest[tree][column] >= tree_height:
+            break
+    return score
+
+
+def calc_scenic_score(forest, row, column):
+    left_view = calculate_left_view(forest, row, column)
+    top_view = calculate_top_view(forest, row, column)
+    bottom_view = calculate_bottom_view(forest, row, column)
+    right_view = calculate_right_view(forest, row, column)
+    return right_view * left_view * top_view * bottom_view
+
+
+def day_eight():
+    forest = []
+    for line in open("inputs/dayEightInput.txt"):
+        tmp = []
+        for ch in line.strip():
+            tmp.append(int(ch))
+        forest.append(tmp)
+    trees_visible = calc_outside_trees(forest)
+    trees_visible += calc_inside_trees(forest)
+    max_scenic_score = 0
+    for i in range(1, len(forest) - 1):
+        for j in range(1, len(forest[i]) - 1):
+            tmp = calc_scenic_score(forest, i, j)
+            if tmp > max_scenic_score:
+                max_scenic_score = tmp
+    print("Outside trees visible: ", trees_visible)
+    print("Max scenic score: ", max_scenic_score)
+
+
+
 if __name__ == '__main__':
     # day_one()
     # day_two()
     # day_three()
     # day_four()
     # day_five()
-    day_six()
+    # day_six()
+    # TODO: day_seven()
+    day_eight()
