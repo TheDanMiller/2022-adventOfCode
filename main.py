@@ -347,6 +347,40 @@ def day_eight():
     print("Max scenic score: ", max_scenic_score)
 
 
+def bridge_right(weird_planck_thing, tail_tracker, count):
+    pass
+
+
+def day_nine():
+    weird_planck_thing = []
+    tail_tracker = [[]]
+    tail_tracker[0][0] = '#'
+    for line in open("inputs/dayNineInput.txt"):
+        directon = line.split()
+        if directon[0] == 'R':
+            weird_planck_thing, tail_tracker = bridge_right(weird_planck_thing, tail_tracker, directon[1])
+
+
+def check_status(results, status):
+    if {20,60,100,140,180,220}.__contains__(status[0]):
+        results.append((status[0] * status[1]))
+    return results
+
+def day_ten():
+    status = [0, 1]
+    results = []
+    for line in open("inputs/dayTen.txt"):
+        instr = line.split()
+        if instr[0] == 'noop':
+            status[0] += 1
+            results = check_status(results, status)
+        else:
+            for _ in range(0, 2):
+                status[0] += 1
+                results = check_status(results, status)
+            status[1] += int(instr[1])
+    print(sum(results))
+
 
 if __name__ == '__main__':
     # day_one()
@@ -356,4 +390,6 @@ if __name__ == '__main__':
     # day_five()
     # day_six()
     # TODO: day_seven()
-    day_eight()
+    # day_eight()
+    # TODO: day_nine()
+    day_ten()
