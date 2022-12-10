@@ -348,7 +348,7 @@ def day_eight():
     print("Max scenic score: ", max_scenic_score)
 
 
-def move_tail(curr_head, curr_tail, tail_tracker):
+def move_tail(curr_head, curr_tail):
     # move horizontal
     if curr_head[0] == curr_tail[0]:
         if curr_head[1] > curr_tail[1]:
@@ -371,48 +371,53 @@ def move_tail(curr_head, curr_tail, tail_tracker):
             curr_tail[0] += 1
         else:
             curr_tail[0] -= 1
-    tail_tracker.append([curr_tail[0], curr_tail[1]])
-    return curr_tail, tail_tracker
+    return curr_tail
 
 
-def move_horizontal(curr_head, curr_tail, tail_tracker, distance):
+def move_horizontal(positions, distance, tail_tracker):
     for i in range(0, abs(distance)):
         if distance > 0:
-            curr_head[1] += 1
+            positions[0][1] += 1
         else:
-            curr_head[1] -= 1
-        if math.dist(curr_head, curr_tail) >= 2:
-            curr_tail, tail_tracker = move_tail(curr_head, curr_tail, tail_tracker)
-    return curr_head, curr_tail, tail_tracker
+            positions[0][1] -= 1
+        for j in range(1, len(positions)):
+            if math.dist(positions[j - 1], positions[j]) >= 2:
+                positions[j] = move_tail(positions[j - 1], positions[j])
+            if j == len(positions) - 1 and positions[j] not in tail_tracker:
+                tail_tracker.append([positions[j][0], positions[j][1]])
+    return positions, tail_tracker
 
 
-def move_vertical(curr_head, curr_tail, tail_tracker, distance):
+def move_vertical(positions,  distance, tail_tracker):
     for i in range(0, abs(distance)):
         if distance > 0:
-            curr_head[0] += 1
+            positions[0][0] += 1
         else:
-            curr_head[0] -= 1
-        if math.dist(curr_head, curr_tail) >= 2:
-            curr_tail, tail_tracker = move_tail(curr_head, curr_tail, tail_tracker)
-    return curr_head, curr_tail, tail_tracker
+            positions[0][0] -= 1
+        for j in range(1, len(positions)):
+            if math.dist(positions[j - 1], positions[j]) >= 2:
+                positions[j] = move_tail(positions[j - 1], positions[j])
+            if j == len(positions) - 1 and positions[j] not in tail_tracker:
+                tail_tracker.append([positions[j][0], positions[j][1]])
+    return positions, tail_tracker
 
 
 def day_nine():
-    curr_head = [0, 0]
-    curr_tail = [0, 0]
+    num_positions = 10
+    positions = []
+    for _ in range(0, num_positions):
+        positions.append([0, 0])
     tail_tracker = [[0, 0]]
     for line in open("inputs/dayNineInput.txt"):
         direction = line.strip().split()
         if direction[0] == 'R':
-            curr_head, curr_tail, tail_tracker = move_horizontal(curr_head, curr_tail, tail_tracker, int(direction[1]))
+            positions, tail_tracker = move_horizontal(positions, int(direction[1]), tail_tracker)
         elif direction[0] == 'L':
-            curr_head, curr_tail, tail_tracker = move_horizontal(curr_head, curr_tail, tail_tracker,
-                                                                 -1 * int(direction[1]))
+            positions, tail_tracker = move_horizontal(positions, -1 * int(direction[1]), tail_tracker)
         elif direction[0] == 'U':
-            curr_head, curr_tail, tail_tracker = move_vertical(curr_head, curr_tail, tail_tracker, int(direction[1]))
+            positions, tail_tracker = move_vertical(positions, int(direction[1]), tail_tracker)
         elif direction[0] == 'D':
-            curr_head, curr_tail, tail_tracker = move_vertical(curr_head, curr_tail, tail_tracker,
-                                                               -1 * int(direction[1]))
+            positions, tail_tracker = move_vertical(positions, -1 * int(direction[1]), tail_tracker)
 
     unique = []
     for coord in tail_tracker:
