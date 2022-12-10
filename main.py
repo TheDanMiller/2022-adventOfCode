@@ -5,6 +5,7 @@
 from heapq import heappop, heappush, heapify
 from enum import Enum
 import numpy as np
+import math
 
 
 def day_one():
@@ -162,7 +163,7 @@ def day_four():
 def read_matrix():
     matrix = []
     for line in open("inputs/dayFiveMatrix.txt"):
-        matrix.append([line[i:i+4] for i in range(0, len(line), 4)])
+        matrix.append([line[i:i + 4] for i in range(0, len(line), 4)])
     matrix_length = len(matrix)
     f = [[] for _ in range(matrix_length)]
     index = matrix_length
@@ -180,7 +181,7 @@ def read_instructions():
     ins = []
     for line in open("inputs/dayFiveInstructions.txt"):
         tmp = line.split()
-        ins.append((int(tmp[1]), int(tmp[3]) - 1, int(tmp[5]) -1))
+        ins.append((int(tmp[1]), int(tmp[3]) - 1, int(tmp[5]) - 1))
     return ins
 
 
@@ -193,7 +194,7 @@ def day_five():
         count = instruction[0]
         pop_list = instruction[1]
         recieve_list = instruction[2]
-        tmp = matrix[pop_list][-1*count:]
+        tmp = matrix[pop_list][-1 * count:]
         for i in range(count):
             matrix[pop_list].pop()
             matrix[recieve_list].append(tmp.pop(0))
@@ -213,7 +214,7 @@ def day_six():
     CONST_LENGTH = 14
     for line in open("inputs/daySixInput.txt"):
         for i in range(len(line)):
-            if is_signal(line.strip()[i:i+CONST_LENGTH], CONST_LENGTH):
+            if is_signal(line.strip()[i:i + CONST_LENGTH], CONST_LENGTH):
                 print(i + CONST_LENGTH)
                 break
 
@@ -276,7 +277,7 @@ def calculate_left_view(forest, row, column):
     score = 0
     if column - 1 == 0:
         return 1
-    for tree in range(column -1, -1, -1):
+    for tree in range(column - 1, -1, -1):
         score += 1
         if forest[row][tree] >= tree_height:
             break
@@ -347,22 +348,80 @@ def day_eight():
     print("Max scenic score: ", max_scenic_score)
 
 
-def bridge_right(weird_planck_thing, tail_tracker, count):
-    pass
+def move_tail(curr_head, curr_tail, tail_tracker):
+    # move horizontal
+    if curr_head[0] == curr_tail[0]:
+        if curr_head[1] > curr_tail[1]:
+            curr_tail[1] += 1
+        else:
+            curr_tail[1] -= 1
+    # move vertical
+    elif curr_head[1] == curr_tail[1]:
+        if curr_head[0] > curr_tail[0]:
+            curr_tail[0] += 1
+        else:
+            curr_tail[0] -= 1
+    # move vertical
+    else:
+        if curr_head[1] > curr_tail[1]:
+            curr_tail[1] += 1
+        else:
+            curr_tail[1] -= 1
+        if curr_head[0] > curr_tail[0]:
+            curr_tail[0] += 1
+        else:
+            curr_tail[0] -= 1
+    tail_tracker.append([curr_tail[0], curr_tail[1]])
+    return curr_tail, tail_tracker
+
+
+def move_horizontal(curr_head, curr_tail, tail_tracker, distance):
+    for i in range(0, abs(distance)):
+        if distance > 0:
+            curr_head[1] += 1
+        else:
+            curr_head[1] -= 1
+        if math.dist(curr_head, curr_tail) >= 2:
+            curr_tail, tail_tracker = move_tail(curr_head, curr_tail, tail_tracker)
+    return curr_head, curr_tail, tail_tracker
+
+
+def move_vertical(curr_head, curr_tail, tail_tracker, distance):
+    for i in range(0, abs(distance)):
+        if distance > 0:
+            curr_head[0] += 1
+        else:
+            curr_head[0] -= 1
+        if math.dist(curr_head, curr_tail) >= 2:
+            curr_tail, tail_tracker = move_tail(curr_head, curr_tail, tail_tracker)
+    return curr_head, curr_tail, tail_tracker
 
 
 def day_nine():
-    weird_planck_thing = []
-    tail_tracker = [[]]
-    tail_tracker[0][0] = '#'
+    curr_head = [0, 0]
+    curr_tail = [0, 0]
+    tail_tracker = [[0, 0]]
     for line in open("inputs/dayNineInput.txt"):
-        directon = line.split()
-        if directon[0] == 'R':
-            weird_planck_thing, tail_tracker = bridge_right(weird_planck_thing, tail_tracker, directon[1])
+        direction = line.strip().split()
+        if direction[0] == 'R':
+            curr_head, curr_tail, tail_tracker = move_horizontal(curr_head, curr_tail, tail_tracker, int(direction[1]))
+        elif direction[0] == 'L':
+            curr_head, curr_tail, tail_tracker = move_horizontal(curr_head, curr_tail, tail_tracker,
+                                                                 -1 * int(direction[1]))
+        elif direction[0] == 'U':
+            curr_head, curr_tail, tail_tracker = move_vertical(curr_head, curr_tail, tail_tracker, int(direction[1]))
+        elif direction[0] == 'D':
+            curr_head, curr_tail, tail_tracker = move_vertical(curr_head, curr_tail, tail_tracker,
+                                                               -1 * int(direction[1]))
 
+    unique = []
+    for coord in tail_tracker:
+        if coord not in unique:
+            unique.append(coord)
+    print(len(unique))
 
 def check_status(results, status):
-    if {20,60,100,140,180,220}.__contains__(status[0]):
+    if {20, 60, 100, 140, 180, 220}.__contains__(status[0]):
         results.append((status[0] * status[1]))
     return results
 
@@ -417,5 +476,5 @@ if __name__ == '__main__':
     # day_six()
     # TODO: day_seven()
     # day_eight()
-    # TODO: day_nine()
+    day_nine()
     # day_ten()
