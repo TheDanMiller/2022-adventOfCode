@@ -366,20 +366,46 @@ def check_status(results, status):
         results.append((status[0] * status[1]))
     return results
 
+
+def print_screen(screen):
+    for line in screen:
+        print(line)
+
+
+def prep_screen():
+    screen = []
+    for i in range(0, 6):
+        screen.append([])
+        for j in range(0, 40):
+            screen[i].append('.')
+    return screen
+
+
+def update_screen(screen, status):
+    print(int(status[0] / 40), ',', status[0] % 40)
+    if {status[1] - 1, status[1], status[1] + 1}.__contains__(status[0] % 40):
+        screen[int(status[0] / 40)][status[0] % 40] = '#'
+    return screen
+
+
 def day_ten():
     status = [0, 1]
     results = []
+    screen = prep_screen()
     for line in open("inputs/dayTen.txt"):
         instr = line.split()
         if instr[0] == 'noop':
+            screen = update_screen(screen, status)
             status[0] += 1
             results = check_status(results, status)
         else:
             for _ in range(0, 2):
+                screen = update_screen(screen, status)
                 status[0] += 1
                 results = check_status(results, status)
             status[1] += int(instr[1])
     print(sum(results))
+    print_screen(screen)
 
 
 if __name__ == '__main__':
@@ -392,4 +418,4 @@ if __name__ == '__main__':
     # TODO: day_seven()
     # day_eight()
     # TODO: day_nine()
-    day_ten()
+    # day_ten()
